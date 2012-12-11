@@ -19,7 +19,7 @@ public class ConditionDeFinVivantMort extends ConditionDeFin
      * @param etatDuJeu an <code>EtatDuJeu</code> value
      * @param _leVivant a <code>Vivant</code> value
      */
-    public ConditionDeFinVivantMort(EtatDuJeu etatDuJeu,Vivant _leVivant)
+    public ConditionDeFin(EtatDuJeu etatDuJeu,Vivant _leVivant)
     {
 	super(_etatDuJeu);
 	leVivant=_leVivant;

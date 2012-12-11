@@ -1,4 +1,5 @@
 import fr.insarouen.asi.prog.asiaventure.*;
+import fr.insarouen.asi.prog.asiaventure.interfaces.*;
 import fr.insarouen.asi.prog.asiaventure.elements.structure.*;
 import fr.insarouen.asi.prog.asiaventure.elements.vivants.*;
 import fr.insarouen.asi.prog.asiaventure.elements.objets.*;
@@ -29,11 +30,13 @@ public class Main
             case SUCCES:
                 {
                     System.out.println("Bravo, vous avez gagné!!!");
+		    s=null;
                 }
                 break;
             case ECHEC:
                 {
                     System.out.println("C'est dommage, vous avez perdu");
+		    s=null;
                 }
                 break;
             }
@@ -61,7 +64,13 @@ public class Main
 			try
 			    {
 				s=new Simulateur(new FileReader(scn.nextLine().trim()));
+                                VueTxt test=new VueTxt(s);
+                                ControlTxt test2=new ControlTxt(s);
+                                Thread monThread=new Thread(test2);
+                                monThread.start();
+                                
                                 jouer(s);
+                                //test2.setQuitter();
 			    }
 			catch(Throwable e)
 			    {
@@ -74,7 +83,14 @@ public class Main
 			try
 			    {
 				if(s!=null)
-                                    jouer(s);
+				    {
+					VueTxt test=new VueTxt(s);
+					ControlTxt test2=new ControlTxt(s);
+					Thread monThread=new Thread(test2);
+					monThread.start();
+					
+					jouer(s);
+				    }
 			    }
 			catch(Throwable e)
 			    {
@@ -90,7 +106,10 @@ public class Main
 				
 				ObjectInputStream ois=new ObjectInputStream(new FileInputStream(scn.nextLine().trim()));
 				s=new Simulateur(ois);
-				ois.close();
+				ControlTxt test2=new ControlTxt(s);
+				Thread monThread=new Thread(test2);
+				monThread.start();
+				
 				jouer(s);
 			    }
 			catch(Throwable e)

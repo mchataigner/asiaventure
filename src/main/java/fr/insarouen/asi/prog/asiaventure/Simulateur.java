@@ -19,15 +19,16 @@ import fr.insarouen.asi.prog.asiaventure.elements.Executable;
  * @author <a href="mailto:mathieu.chataigner@insa-rouen.fr">Mathieu CHATAIGNER</a>
  * @version 1.0
  */
-public class Simulateur
+public class Simulateur extends Observable
 {
     private ArrayList<ConditionDeFin> lesConditions;
     private Monde leMonde;
     private int dureeDeJeu;
     private int tempsPourPrevenirLaFinDuJeu;
     private EtatDuJeu lEtatDuJeu;
-    private boolean quitter;
-    
+    private boolean quitter=false;
+    private boolean attendre=true;
+    private String ordre=null;
 	
     /**
      * Creates a new <code>Simulateur</code> instance.
@@ -80,6 +81,8 @@ public class Simulateur
 	dureeDeJeu=20;
 	String leType;
 	StreamTokenizer tokenReader=new StreamTokenizer(reader);
+	tokenReader.nextToken();
+	dureeDeJeu=(int)tokenReader.nval;
 	while(tokenReader.nextToken()!=tokenReader.TT_EOF)
 	    {
 		construitMonde(tokenReader);
@@ -225,40 +228,82 @@ public class Simulateur
 	return lEtatDuJeu;
     }
     
+    public void setQuitter()
+    {
+        quitter=!quitter;
+    }
+
+    public boolean quitter()
+    {
+        return quitter;
+    }
+
+    public void reprendre()
+    {
+        attendre=false;
+    }
+
+    public boolean attendre()
+    {
+        return attendre;
+    }
+    
+    public void setOrdreJH(String ordre)
+    {
+        this.ordre=ordre;
+    }    
+
     private void executerUnTourJH(JoueurHumain jh)throws Throwable
     {
-        String ordre=null;
-        Scanner scn=new Scanner(System.in);
-        EtatDuJeu edj=EtatDuJeu.ENCOURS;
-        System.out.println("Voulez-vous quitter ? O/N");
-        ordre=scn.next();
-        scn.nextLine();
-        if(ordre.toUpperCase().equals("O"))
-            quitter=true;
-        else
-            {
-                do
-                    {
-                        System.out.println(jh);
-                        System.out.println(jh.getPiece());
-                        System.out.println("Quelle action souhaitez-vous faire ?");
-                        ordre=scn.nextLine();
-                    }
-                while(ordre.trim().length()==0);
-                (jh).setOrdre(ordre);
-                try
-                    {
-                        jh.executer();
-                    }
-                catch(ASIAventureException e)
-                    {
-                        System.out.println(e.getMessageASI());
-                    }
-                catch(Throwable e)
-                    {
-                        throw e;
-                    }
-            }
+        
+        attendre=true;
+        quitter=false;
+        setChanged();
+        notifyObservers(jh);
+        while(attendre())
+	    {
+		try
+		    {
+			Thread.sleep(100);
+		    }
+		catch(Throwable e)
+		    {
+		    }
+	    };
+	if(!quitter())
+	    {
+		jh.setOrdre(ordre);
+		try
+		    {
+			jh.executer();
+		    }
+		catch(ASIAventureException e)
+		    {
+			System.out.println(e.getMessageASI());
+		    }
+		catch(Throwable e)
+		    {
+			throw e;
+		    }
+	    }
+	/*String ordre=null;
+	  Scanner scn=new Scanner(System.in);
+	  System.out.println("Voulez-vous quitter ? O/N");
+	  ordre=scn.next();
+	  scn.nextLine();
+	  if(ordre.toUpperCase().equals("O"))
+	  quitter=true;
+	  else
+	  {
+	  do
+	  {
+	  System.out.println(jh);
+	  System.out.println(jh.getPiece());
+	  System.out.println("Quelle action souhaitez-vous faire ?");
+	  ordre=scn.nextLine();
+	  }
+	  while(ordre.trim().length()==0);
+	  }*/
     }
     
     /**
@@ -323,4 +368,6 @@ public class Simulateur
       {
 	
       }*/
+
+    
 }
