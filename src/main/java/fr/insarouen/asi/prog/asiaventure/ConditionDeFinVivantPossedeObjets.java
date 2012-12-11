@@ -3,7 +3,7 @@ package fr.insarouen.asi.prog.asiaventure;
 import fr.insarouen.asi.prog.asiaventure.elements.vivants.Vivant;
 import fr.insarouen.asi.prog.asiaventure.elements.structure.Piece;
 import fr.insarouen.asi.prog.asiaventure.elements.objets.Objet;
-import java.util.ArrayList;
+
 
 /**
  * Describe class <code>ConditionDeFinVivantPossedeObjets</code> here.
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class ConditionDeFinVivantPossedeObjets extends ConditionDeFin 
 {
     private Vivant leVivant;
-    private ArrayList<Objet> lesObj;
+    private List<Objet> lesObj;
     
     /**
      * Creates a new <code>ConditionDeFinVivantPossedeObjets</code> instance.
@@ -26,7 +26,7 @@ public class ConditionDeFinVivantPossedeObjets extends ConditionDeFin
     {
 	super(_etatDuJeu);
 	leVivant=_leVivant;
-	lesObj.addAll(Arrays.asList(_obj));
+	lesObj=Arrays.asList(_obj);
     }
 
     /**

@@ -19,16 +19,17 @@ import fr.insarouen.asi.prog.asiaventure.elements.Executable;
  * @author <a href="mailto:mathieu.chataigner@insa-rouen.fr">Mathieu CHATAIGNER</a>
  * @version 1.0
  */
-public class Simulateur
+public class Simulateur extends Observable
 {
     private ArrayList<ConditionDeFin> lesConditions;
     private Monde leMonde;
     private int dureeDeJeu;
     private int tempsPourPrevenirLaFinDuJeu;
     private EtatDuJeu lEtatDuJeu;
-    private boolean quitter;
-    
-	
+    private boolean quitter=false;
+    private JoueurHumain jh;
+    private boolean attendre=true;
+    private String ordre=null;
     /**
      * Creates a new <code>Simulateur</code> instance.
      *
@@ -38,6 +39,7 @@ public class Simulateur
      */
     public Simulateur(Monde leMonde, int dureeDeJeu, int tempsPourPrevenirLaFinDuJeu, ConditionDeFin... conditionsDeFin)
     {
+	super();
 	this.leMonde=leMonde;
 	this.dureeDeJeu=dureeDeJeu;
 	this.tempsPourPrevenirLaFinDuJeu=tempsPourPrevenirLaFinDuJeu;
@@ -57,6 +59,7 @@ public class Simulateur
      */
     public Simulateur(ObjectInputStream ois)throws IOException,NomDEntiteDejaUtiliseDansLeMondeException,ClassNotFoundException
     {
+	super();
 	quitter=false;
 	leMonde=(Monde)ois.readObject();
 	lesConditions=(ArrayList<ConditionDeFin>)ois.readObject();
@@ -74,12 +77,15 @@ public class Simulateur
      */
     public Simulateur(Reader reader)throws java.io.IOException,NomDEntiteDejaUtiliseDansLeMondeException
     {
+	super();
 	quitter=false;
 	lesConditions=new ArrayList<ConditionDeFin>();
 	lEtatDuJeu=EtatDuJeu.ENCOURS;
 	dureeDeJeu=20;
 	String leType;
 	StreamTokenizer tokenReader=new StreamTokenizer(reader);
+	//tokenReader.nextToken();
+	//dureeDeJeu=(int)tokenReader.nval;
 	while(tokenReader.nextToken()!=tokenReader.TT_EOF)
 	    {
 		construitMonde(tokenReader);
@@ -225,41 +231,92 @@ public class Simulateur
 	return lEtatDuJeu;
     }
     
-    private void executerUnTourJH(JoueurHumain jh)throws Throwable
+    public JoueurHumain getJH()
     {
-        String ordre=null;
-        Scanner scn=new Scanner(System.in);
-        EtatDuJeu edj=EtatDuJeu.ENCOURS;
-        System.out.println("Voulez-vous quitter ? O/N");
-        ordre=scn.next();
-        scn.nextLine();
-        if(ordre.toUpperCase().equals("O"))
-            quitter=true;
-        else
+	return this.jh;
+    }
+    
+    
+    public boolean attendre()
+    {
+        return attendre;
+    }
+    
+    public synchronized void reprendre()
+    {
+        attendre=false;
+    }
+    
+    public boolean getQuitter()
+    {
+        return this.quitter;
+    }
+    
+    public synchronized void setQuitter()
+    {
+        quitter=true;
+    }
+    
+    public synchronized void setOrdreJH(String ord)
+    {
+        ordre=ord;
+    }
+    
+    private void executerUnTourJH(JoueurHumain _jh)throws Throwable
+    {
+	this.jh=_jh;
+	quitter=false;
+        boolean commandeValide=false;
+        do
             {
-                do
+                ordre=null;
+                attendre=true;
+                System.err.println("huhu");
+                setChanged();
+                System.err.println("huhu");
+                notifyObservers((Object)jh);
+                System.err.println("huhu");
+                //while(attendre());
+                System.err.println("huhu");
+                if(ordre!=null)
                     {
-                        System.out.println(jh);
-                        System.out.println(jh.getPiece());
-                        System.out.println("Quelle action souhaitez-vous faire ?");
-                        ordre=scn.nextLine();
-                    }
-                while(ordre.trim().length()==0);
-                (jh).setOrdre(ordre);
-                try
-                    {
-                        jh.executer();
-                    }
-                catch(ASIAventureException e)
-                    {
-                        System.out.println(e.getMessageASI());
-                    }
-                catch(Throwable e)
-                    {
-                        throw e;
+                        try
+                            {
+                                jh.setOrdre(ordre);
+                                jh.executer();
+
+                                commandeValide=true;
+                            }
+                        catch(ASIAventureException e)
+                            {
+                                e.printStackTrace();
+                                System.err.println(e.getMessage());
+                            }
+                        catch(Throwable e)
+                            {
+                                e.printStackTrace();
+                        
+                                System.err.println(e.getMessage());
+                            }
                     }
             }
+        while(!commandeValide);
+
+        //         synchronized(this)
+        //             {
+        //                 System.out.println("test");
+        //                 Thread.currentThread().wait();
+        //                 //Thread.currentThread().wait();
+        //                 System.err.println("huhu");
+        //             }
     }
+    
+    /*  
+        public void reprendre()
+        {
+	attendre=false;
+        }
+    */    
     
     /**
      * Describe <code>executerUnTour</code> method here.
@@ -279,22 +336,27 @@ public class Simulateur
 			if(exec instanceof JoueurHumain)
 			    {
 				executerUnTourJH((JoueurHumain)exec);
+                                System.out.println("test");
 			    }
 			else
 			    {
 				try
 				    {
 					exec.executer();
+                                        System.out.println("test");
 				    }
 				catch(ASIAventureException e)
 				    {
-					System.out.println(e.getMessageASI());
+                                        e.printStackTrace();
+					System.out.println(e.getMessage());
 				    }
 				catch(Throwable e)
 				    {
+                                        e.printStackTrace();
 					throw e;
 				    }
 			    }
+
 		    }
 		dureeDeJeu--;
 		Iterator i=lesConditions.iterator();

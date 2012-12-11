@@ -23,7 +23,7 @@ public class Serrure extends Objet implements Activable
     private static int numSerrure=1;
     private Etat etat;
     private String nomClef=null;
-    private static int numClef=1;
+    private int numCle;
     
     /**
      * Créer une nouvelle instance de <code>Serrure</code>.
@@ -35,6 +35,7 @@ public class Serrure extends Objet implements Activable
     {
 	super(leNom,leMonde);
 	etat=Etat.VERROUILLE;
+	numCle=numSerrure;
 	numSerrure++;
     }
     
@@ -62,8 +63,7 @@ public class Serrure extends Objet implements Activable
 		{
 		    try
 			{
-			    laClef=new Clef("clef"+numClef,getMonde());
-                            numClef++;
+			    laClef=new Clef("clef"+numSerrure,getMonde());
 			    nomClef=laClef.getNom();
 			    nomPasCorrect=false;
 			}

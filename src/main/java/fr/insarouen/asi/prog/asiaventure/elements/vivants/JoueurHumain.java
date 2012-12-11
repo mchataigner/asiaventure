@@ -43,14 +43,15 @@ public class JoueurHumain extends Vivant
 	super(leNom,leMonde,pointsVie,pointsForce,piece);
     }
     
+    
     /**
      * La méthode <code>setOrdre</code> permet de donner un ordre au joueur humain.
      *
      * @param _ordre a <code>String</code> value
      */
-    public void setOrdre(String _ordre)
+    public synchronized void setOrdre(String _ordre)
     {
-	ordre=_ordre;
+        ordre=_ordre;
     }
     
     /**
@@ -61,16 +62,16 @@ public class JoueurHumain extends Vivant
      */
     public void commandeOUVRIR(String nomPorte)throws CommandeImpossiblePourLeVivantException
     {
-    	try
-	    {
-		Porte laPorte=this.getPiece().getPorte(nomPorte);
-		if(laPorte.getEtat()!=Etat.OUVERT)
-		    laPorte.activer();
-	    }
-	catch(ActivationImpossibleException e)
-	    {
-		throw new CommandeImpossiblePourLeVivantException(e.getMessageASI());
-	    }
+        try
+            {
+                Porte laPorte=this.getPiece().getPorte(nomPorte);
+                if(laPorte.getEtat()!=Etat.OUVERT)
+                    laPorte.activer();
+            }
+        catch(ActivationImpossibleException e)
+            {
+                throw new CommandeImpossiblePourLeVivantException(e.getMessageASI());
+            }
     }
 
     /**
@@ -81,16 +82,16 @@ public class JoueurHumain extends Vivant
      */
     public void commandeFERMER(String nomPorte)throws CommandeImpossiblePourLeVivantException
     {
-    	try
-	    {
-		Porte laPorte=this.getPiece().getPorte(nomPorte);
-		if(laPorte.getEtat()!=Etat.FERME)
-		    laPorte.activer();
-	    }
-	catch(ActivationImpossibleException e)
-	    {
-		throw new CommandeImpossiblePourLeVivantException(e.getMessageASI());
-	    }
+        try
+            {
+                Porte laPorte=this.getPiece().getPorte(nomPorte);
+                if(laPorte.getEtat()!=Etat.FERME)
+                    laPorte.activer();
+            }
+        catch(ActivationImpossibleException e)
+            {
+                throw new CommandeImpossiblePourLeVivantException(e.getMessageASI());
+            }
     }
     
     
@@ -103,17 +104,17 @@ public class JoueurHumain extends Vivant
      */
     public void commandeOUVRIR(String nomPorte,String nomObjet)throws CommandeImpossiblePourLeVivantException
     {
-    	try
-	    {
-		Porte laPorte=this.getPiece().getPorte(nomPorte);
-		if(laPorte.getEtat()==Etat.VERROUILLE)
-		    laPorte.activerAvec(getObjet(nomObjet));
-	    }
-	catch(ActivationImpossibleException e)
-	    {
-		System.out.println(e);
-		throw new CommandeImpossiblePourLeVivantException("commande impossible pour le vivant");
-	    }
+        try
+            {
+                Porte laPorte=this.getPiece().getPorte(nomPorte);
+                if(laPorte.getEtat()==Etat.VERROUILLE)
+                    laPorte.activerAvec(getObjet(nomObjet));
+            }
+        catch(ActivationImpossibleException e)
+            {
+                System.err.println(e);
+                throw new CommandeImpossiblePourLeVivantException("commande impossible pour le vivant");
+            }
 	
     }
 
@@ -125,15 +126,15 @@ public class JoueurHumain extends Vivant
      */
     public void commandeFRANCHIR(String nomPorte)throws CommandeImpossiblePourLeVivantException
     {
-	try
-	    {
-		Porte laPorte=this.getPiece().getPorte(nomPorte);
-		this.franchir(laPorte);
-	    }
-	catch(ElementStructurelException e)
-	    {
-		throw new CommandeImpossiblePourLeVivantException("impossible de franchir "+nomPorte);
-	    }
+        try
+            {
+                Porte laPorte=this.getPiece().getPorte(nomPorte);
+                this.franchir(laPorte);
+            }
+        catch(ElementStructurelException e)
+            {
+                throw new CommandeImpossiblePourLeVivantException("impossible de franchir "+nomPorte);
+            }
     }
 
     /**
@@ -144,15 +145,15 @@ public class JoueurHumain extends Vivant
      */
     public void commandePRENDRE(String nomObjet)throws CommandeImpossiblePourLeVivantException
     {
-	try
-	    {
-		this.prendre(nomObjet);
-	    }
-	catch(PieceException e)
-	    {
-		System.out.println(e);
-		throw new CommandeImpossiblePourLeVivantException("impossible de prendre l'objet");
-	    }
+        try
+            {
+                this.prendre(nomObjet);
+            }
+        catch(PieceException e)
+            {
+                System.out.println(e);
+                throw new CommandeImpossiblePourLeVivantException("impossible de prendre l'objet");
+            }
     }
 
     /**
@@ -163,14 +164,14 @@ public class JoueurHumain extends Vivant
      */
     public void commandeDEPOSER(String nomObjet)throws CommandeImpossiblePourLeVivantException
     {
-	try
-	    {
-		this.deposer(nomObjet);
-	    }
-	catch(ObjetNonPossedeParLeVivantException e)
-	    {
-		throw new CommandeImpossiblePourLeVivantException("impossible de déposer l'objet");
-	    }
+        try
+            {
+                this.deposer(nomObjet);
+            }
+        catch(ObjetNonPossedeParLeVivantException e)
+            {
+                throw new CommandeImpossiblePourLeVivantException("impossible de déposer l'objet");
+            }
     }
     
     
@@ -181,29 +182,32 @@ public class JoueurHumain extends Vivant
      * @exception CommandeImpossiblePourLeVivantException lancée si la commande est impossible pour le vivant.
      */
     
-    public void executer()throws CommandeImpossiblePourLeVivantException
+    public synchronized void executer()throws CommandeImpossiblePourLeVivantException
     {	
-    	try
-	    {
-		ordre=ordre.replace("avec ","");
-		String[] ordreDecoupe=ordre.split(" +");
-		String[] params=new String[ordreDecoupe.length-1];
-		System.arraycopy(ordreDecoupe,1,params,0,params.length);
-		//String[] params=Arrays.copyOfRange(ordreDecoupe,1,Array.getLength(ordreDecoupe));
-		Class[] typesParams=new Class[Array.getLength(params)];
-		Arrays.fill(typesParams,String.class);
-		Method meth=this.getClass().getMethod("commande"+ordreDecoupe[0].toUpperCase(),typesParams);
-		meth.invoke(this,(Object[])params);
-	    }
-	catch(Throwable e)
-	    {
-		if(e instanceof CommandeImpossiblePourLeVivantException)
-		    throw (CommandeImpossiblePourLeVivantException)e;
-		else
-		    throw new CommandeImpossiblePourLeVivantException("commande inccorrecte");
-	    }
+        
+        //System.out.println(ordre);
+        try
+            {
+                ordre=ordre.replace("avec ","");
+                String[] ordreDecoupe=ordre.split(" +");
+		String [] params=new String[ordreDecoupe.length-1];
+                System.arraycopy(ordreDecoupe,1,params,0,params.length);//Arrays.copyOfRange(ordreDecoupe,1,Array.getLength(ordreDecoupe));
+                Class[] typesParams=new Class[Array.getLength(params)];
+                Arrays.fill(typesParams,String.class);
+                Method meth=this.getClass().getMethod("commande"+ordreDecoupe[0].toUpperCase(),typesParams);
+                meth.invoke(this,(Object[])params);
+            }
+        catch(Throwable e)
+            {
+                e.printStackTrace();
+                if(e instanceof CommandeImpossiblePourLeVivantException)
+                    throw (CommandeImpossiblePourLeVivantException)e;
+                else
+                    throw new CommandeImpossiblePourLeVivantException("commande inccorrecte");
+            }
 
-	ordre=null;
-	ordreDecoupe=null;
+        ordre=null;
+        ordreDecoupe=null;
     }
+    
 }

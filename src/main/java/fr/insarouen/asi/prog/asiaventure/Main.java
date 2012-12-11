@@ -4,6 +4,9 @@ import fr.insarouen.asi.prog.asiaventure.elements.vivants.*;
 import fr.insarouen.asi.prog.asiaventure.elements.objets.*;
 import fr.insarouen.asi.prog.asiaventure.elements.objets.serrurerie.*;
 
+import fr.insarouen.asi.prog.asiaventure.interfaces.FenetreJouerUnePartie;
+
+
 import java.io.*;
 import java.util.*;
 
@@ -48,7 +51,10 @@ public class Main
 	String ordre,path;
 	boolean quitter=false;
 	Simulateur s=null;
-	
+        EntreeCommandeJH ecjh=null;
+        VueCommandeJH vcjh=null;
+	FenetreJouerUnePartie fjup=null;
+        //        Test titi=new Test();
 	
 	do
 	    {
@@ -60,12 +66,26 @@ public class Main
 			System.out.println("Entrez le nom du fichier de création de jeu :");
 			try
 			    {
-				s=new Simulateur(new FileReader(scn.nextLine().trim()));
-                                jouer(s);
+				ordre=scn.nextLine().trim();
+				s=new Simulateur(new FileReader(ordre));
+                                //fjup=new FenetreJouerUnePartie(s);
+                                vcjh=new VueCommandeJH(s);
+                                ecjh=new EntreeCommandeJH(s);
+				
+                                
+                                // Thread t2=new Thread(vcjh);
+                                // 				t2.start();
+				
+                                // 				Thread t=new Thread(ecjh);
+                                // 				t.start();
+                                //s.notifyObservers();
+				System.err.println(ordre);
+				jouer(s);
 			    }
 			catch(Throwable e)
 			    {
-				System.out.println("Erreur dans la création du simulateur");
+                                e.printStackTrace();
+				System.out.println(e.getMessage()+" Erreur dans la création du simulateur");
 			    }
 			
 		    }
