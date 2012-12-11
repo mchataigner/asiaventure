@@ -4,6 +4,8 @@ import fr.insarouen.asi.prog.asiaventure.elements.vivants.Vivant;
 import fr.insarouen.asi.prog.asiaventure.elements.structure.Piece;
 import fr.insarouen.asi.prog.asiaventure.elements.objets.Objet;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Describe class <code>ConditionDeFinVivantPossedeObjets</code> here.
@@ -20,12 +22,12 @@ public class ConditionDeFinVivantPossedeObjets extends ConditionDeFin
      * Creates a new <code>ConditionDeFinVivantPossedeObjets</code> instance.
      *
      * @param etatDuJeu an <code>EtatDuJeu</code> value
-     * @param _leVivant a <code>Vivant</code> value
+     * @param leVivant a <code>Vivant</code> value
      */
-    public ConditionDeFinVivantPossedeObjets(EtatDuJeu etatDuJeu,Vivant _leVivant, Objet... _obj)
+    public ConditionDeFinVivantPossedeObjets(EtatDuJeu etatDuJeu,Vivant leVivant, Objet... _obj)
     {
-	super(_etatDuJeu);
-	leVivant=_leVivant;
+	super(etatDuJeu);
+	this.leVivant =leVivant;
 	lesObj.addAll(Arrays.asList(_obj));
     }
 
@@ -40,7 +42,7 @@ public class ConditionDeFinVivantPossedeObjets extends ConditionDeFin
 	Iterator i=lesObj.iterator();
 	while(possede&&i.hasNext())
 	    {
-		if(!leVivant.contientObjet((Objet)i.next))
+		if(!leVivant.possede((Objet)i.next()))
 		    possede=false;
 	    }
 	if(possede)

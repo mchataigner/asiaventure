@@ -17,12 +17,12 @@ public class ConditionDeFinVivantMort extends ConditionDeFin
      * Creates a new <code>ConditionDeFin</code> instance.
      *
      * @param etatDuJeu an <code>EtatDuJeu</code> value
-     * @param _leVivant a <code>Vivant</code> value
+     * @param leVivant a <code>Vivant</code> value
      */
-    public ConditionDeFinVivantMort(EtatDuJeu etatDuJeu,Vivant _leVivant)
+    public ConditionDeFinVivantMort(EtatDuJeu etatDuJeu,Vivant leVivant)
     {
-	super(_etatDuJeu);
-	leVivant=_leVivant;
+	super(etatDuJeu);
+	this.leVivant =leVivant;
     }
 
     /**
@@ -32,7 +32,7 @@ public class ConditionDeFinVivantMort extends ConditionDeFin
      */
     public EtatDuJeu getConditionVerfiee()
     {
-	return etatDuJeu;
+	return super.getConditionVerfiee();
     }
 
     /**

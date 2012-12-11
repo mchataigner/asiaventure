@@ -17,11 +17,11 @@ public abstract class ConditionDeFin implements Serializable
     /**
      * Creates a new <code>ConditionDeFin</code> instance.
      *
-     * @param _etatDuJeu an <code>EtatDuJeu</code> value
+     * @param etatDuJeu an <code>EtatDuJeu</code> value
      */
-    public ConditionDeFin(EtatDuJeu _etatDuJeu)
+    public ConditionDeFin(EtatDuJeu etatDuJeu)
     {
-	this.etatDuJeu=_etatDuJeu;
+	this.etatDuJeu=etatDuJeu;
     }
 
     /**

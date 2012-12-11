@@ -46,11 +46,11 @@ public class JoueurHumain extends Vivant
     /**
      * La méthode <code>setOrdre</code> permet de donner un ordre au joueur humain.
      *
-     * @param _ordre a <code>String</code> value
+     * @param ordre a <code>String</code> value
      */
-    public void setOrdre(String _ordre)
+    public void setOrdre(String ordre)
     {
-	ordre=_ordre;
+	this.ordre =ordre;
     }
     
     /**

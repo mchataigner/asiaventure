@@ -5,6 +5,8 @@ import fr.insarouen.asi.prog.asiaventure.elements.structure.Piece;
 import fr.insarouen.asi.prog.asiaventure.elements.objets.Objet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Describe class <code>ConditionDeFinVivantDansPieceEtPossedeObjets</code> here.
@@ -22,15 +24,15 @@ public class ConditionDeFinVivantDansPieceEtPossedeObjets extends ConditionDeFin
      * Creates a new <code>ConditionDeFinVivantDansPieceEtPossedeObjets</code> instance.
      *
      * @param etatDuJeu an <code>EtatDuJeu</code> value
-     * @param _leVivant a <code>Vivant</code> value
-     * @param _piece a <code>Piece</code> value
+     * @param leVivant a <code>Vivant</code> value
+     * @param piece a <code>Piece</code> value
      */
-    public ConditionDeFinVivantDansPieceEtPossedeObjets(EtatDuJeu etatDuJeu,Vivant _leVivant, Piece _piece,Objet... _obj)
+    public ConditionDeFinVivantDansPieceEtPossedeObjets(EtatDuJeu etatDuJeu,Vivant leVivant, Piece piece,Objet... obj)
     {
-	super(_etatDuJeu);
-	leVivant=_leVivant;
-	piece=_piece;
-	lesObj.addAll(Arrays.asList(_obj));
+	super(etatDuJeu);
+	this.leVivant =leVivant;
+	this.piece =piece;
+	lesObj.addAll(Arrays.asList(obj));
     }
 
     /**
@@ -44,7 +46,7 @@ public class ConditionDeFinVivantDansPieceEtPossedeObjets extends ConditionDeFin
 	Iterator i=lesObj.iterator();
 	while(possede&&i.hasNext())
 	    {
-		if(!leVivant.contientObjet((Objet)i.next))
+		if(!leVivant.possede((Objet) i.next()))
 		    possede=false;
 	    }
 	if(possede&&piece.contientVivant(leVivant))

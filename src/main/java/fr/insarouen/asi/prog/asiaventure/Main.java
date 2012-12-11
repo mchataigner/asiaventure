@@ -1,3 +1,5 @@
+package fr.insarouen.asi.prog.asiaventure;
+
 import fr.insarouen.asi.prog.asiaventure.*;
 import fr.insarouen.asi.prog.asiaventure.elements.structure.*;
 import fr.insarouen.asi.prog.asiaventure.elements.vivants.*;
@@ -18,12 +20,12 @@ public class Main
     /**
      * Describe <code>main</code> method here.
      *
-     * @param args a <code>String</code> value
+     * @param simulateur a <code>String</code> value
      * @exception Throwable if an error occurs
      */
-    public static EtatDuJeu jouer(Simulateur s)throws Throwable
+    public static EtatDuJeu jouer(Simulateur simulateur)throws Throwable
     {
-        EtatDuJeu edj=s.executerJusquALaFin();
+        EtatDuJeu edj=simulateur.executerJusquALaFin();
         switch(edj)
             {
             case SUCCES:
